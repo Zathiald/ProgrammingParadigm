@@ -30,15 +30,15 @@ It is guaranteed that the sum of n over all test cases does not exceed 2⋅10^5.
 
 So for example we will have this input
 
-4 <- Number of arrays
-6 <- Length of first array
-1 -3 7 -6 2 5 <- First array
-4 <- Lenght of second array
-2 9 -5 -3 <- Second array
-8 <- Length of third array
--3 -4 2 -5 1 10 17 23 <- Third array
-1 <- Length of fourth array
-830 <- Fourth array
+* 4 <- Number of arrays
+* 6 <- Length of first array
+* 1 -3 7 -6 2 5 <- First array
+* 4 <- Lenght of second array
+* 2 9 -5 -3 <- Second array
+* 8 <- Length of third array
+* -3 -4 2 -5 1 10 17 23 <- Third array
+* 1 <- Length of fourth array
+* 830 <- Fourth array
 
 And for our output we will print one integer which is the maximum Cryopt value of the array 
 
