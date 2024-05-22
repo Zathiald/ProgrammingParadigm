@@ -357,5 +357,9 @@ for (auto& future : futures) {
 }
 ```
 
+The thing is that both python and c++ have a \(O(n^3)\) complexity level in its code, but because of the simplicity and rapid development, python offers us a more direct solution that can be expanded upon, while c++ requires more intricate analysis and development.
+
+## References
+Problem - 1903C - CodeForces. (s. f.). Codeforces. https://codeforces.com/problemset/problem/1903/C
 
 
