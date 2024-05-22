@@ -51,6 +51,79 @@ So now that we have our problem we will implement a model for further analysis.
 
 ## Model
 
+In order to solve this problem we will need to be creating different matrices, for each possible division of an array, each matrix will give us a Cryopt value and then after getting each Cryopt value we can compare them in order to get the maximum value.
+
+So we will go step by step in order to build a dynamic table, some things to take into account for symbols:
+
+
+* i will be an index that represents the number of elements considered from the start of the array.
+
+* j will be an index that represents the number of subarrays the first 'i' elements are divided into.
+
+ So for this table we will go step by step
+
+ 1. Initialization:
+
+    dp[i][j] is initialized to -∞ for all i and j except dp[0][0] which is set to 0.
+    This indicates that with zero elements and zero subarrays, the sum is zero.
+
+ 2. Prefix Sum Calculation:
+
+    An auxiliary array prefix_sum is used where prefix_sum[i] stores the sum of the first i elements of the array.
+    This helps in quickly calculating the sum of any subarray.
+
+ 3. Filling the DP Table:
+    For each pair (i, j), the algorithm considers all possible previous subarray endings k (where k < i). It calculates the value dp[k][j-1] + j * (prefix_sum[i] - prefix_sum[k]).
+    If this value is greater than the current dp[i][j], it updates dp[i][j] and records the subarray division in divs[i][j].
+
+
+We will end up having this table:
+
+       j
+       0      1      2      3      ...    n
+    +------+------+------+------+------+------+ 
+  0 |    0 |  -∞  |  -∞  |  -∞  |  ... |  -∞  |  <- Inicialización
+    +------+------+------+------+------+------+ 
+  1 |  -∞  | dp[1][1] | dp[1][2] | dp[1][3] | ... | dp[1][n] |
+    +------+------+------+------+------+------+ 
+  2 |  -∞  | dp[2][1] | dp[2][2] | dp[2][3] | ... | dp[2][n] |
+    +------+------+------+------+------+------+ 
+  3 |  -∞  | dp[3][1] | dp[3][2] | dp[3][3] | ... | dp[3][n] |
+    +------+------+------+------+------+------+ 
+  . |  ... |  ... |  ... |  ... |  ... |  ... | 
+  . |  ... |  ... |  ... |  ... |  ... |  ... | 
+  n |  -∞  | dp[n][1] | dp[n][2] | dp[n][3] | ... | dp[n][n] |
+    +------+------+------+------+------+------+
+
+Let's test it, we will use this array: 1, -3, 7, -6, 2, 5
+
+in which we will calculate dp[4][2], meaning all the possible ways to divide the array into 2 subarrays,so we would have this possible divisions
+
+- [1,-3] [7,-6,2,5], whose operation is 1×(7−3)+2×(−6+2)+3×(5)=13
+- [1, -3, 7] [-6,2,5] whose operation is 1×(7−3−6)+2×(2)+3×(5)=14
+
+so if we fill the table with this solutions, we would get 
+
+       j
+       0    1     2     3     4     5     6
+    +----+-----+-----+-----+-----+-----+-----+
+  0 |  0 |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |
+    +----+-----+-----+-----+-----+-----+-----+
+  1 | -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |
+    +----+-----+-----+-----+-----+-----+-----+
+  2 | -∞ |  -∞ |  -∞  |  -∞ |  13 |  14 |  -∞ |
+    +----+-----+-----+-----+-----+-----+-----+
+  3 | -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |
+    +----+-----+-----+-----+-----+-----+-----+
+  4 | -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |
+    +----+-----+-----+-----+-----+-----+-----+
+  5 | -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |
+    +----+-----+-----+-----+-----+-----+-----+
+  6 | -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |  -∞ |
+    +----+-----+-----+-----+-----+-----+-----+
+
+and then we can fill each square with all the divisions and its result in order to determine the maximmum one.
+
 ## Implementation
 
 In order to solve this code, we will create a python code in which we can take the inputs and output the maximum Cryopt value, for this code we will use parallel programming in order to get all the different array divisions in a parallel way in order to accelerate the process, the code will go as follows:
