@@ -229,4 +229,68 @@ The second way to test this program is by simply running the "AutomatizedNightma
 
 ## Complexity Analysis
 
+We will now analyze the code section by section
+
+1. **Initialization**:
+   ```python
+   n = len(arr)  # O(1)
+   dp = [[-float('inf')]*(n+1) for _ in range(n+1)]  # O(n^2)
+   divs = [[[] for _ in range(n+1)] for _ in range(n+1)]  # O(n^2)
+   prefix_sum = [0]*(n+1)  # O(n)
+   for i in range(n):  # O(n)
+       prefix_sum[i+1] = prefix_sum[i] + arr[i]  # O(1)
+   dp[0][0] = 0  # O(1)
+   ```
+   **Complexity Analysis**:
+   -The initialization of dp and divs involves nested loops, resulting in a time complexity of \(O(n^2)\) due to the creation of an n×n matrix.
+   - Initializing the prefix_sum array requires a single pass through the input array, resulting in \(O(n)\) complexity.
+   - Time Complexity: \(O(n^2)\), due to the dominant initialization of the matrices.
+
+2. **Nested Loop**:
+   ```python
+   def calculate_dp_and_divs(i, j):
+       for k in range(i):  # O(i)
+           val = dp[k][j-1] + j*(prefix_sum[i]-prefix_sum[k])  # O(1)
+           if val > dp[i][j]:  # O(1)
+               dp[i][j] = val  # O(1)
+               div = divs[k][j-1] + [arr[k:i]]  # O(i)
+               divs[i][j] = div  # O(1)
+   
+   with concurrent.futures.ThreadPoolExecutor() as executor:  # O(1)
+       for i in range(1, n+1):  # O(n)
+           for j in range(1, i+1):  # O(i)
+               executor.submit(calculate_dp_and_divs, i, j)  # O(1)
+   ```
+   **Complexity Analysis**:
+   -The outer loop iterates from 1 to n, and the inner loop iterates from 1 to i, where i ranges from 1 to n.
+   -Inside the inner loop, there's an additional loop that iterates up to i.
+   -The overall time complexity of this section is \(O(n^3)\) due to the nested structure iterating up to n for both i and j, resulting in \(O(n^2)\),
+   and within each iteration, there's an additional loop that iterates up to i, resulting in an additional \(O(n)\) complexity.
+
+3. **Reading Input**:
+   ```python
+   num_arrays = int(input())  # O(1)
+   arrays = []  # O(1)
+   for _ in range(num_arrays):  # O(num_arrays)
+       length = int(input())  # O(1)
+       array = list(map(int, input().split()))  # O(n)
+       arrays.append(array)  # O(1)
+   ```
+   **Complexity Analysis**:
+   - The time complexity of reading each array is linear, \(O(n)\), where n is the length of the array.
+   - Since there are num_arrays arrays to read, the overall time complexity becomes \(O(num\_arrays \times n)\)
+
+4. **Calculating and Printing Results**:
+   ```python
+   for arr in arrays:  # O(num_arrays)
+       max_val, max_div = max_chipriota(arr)  # O(n^3)
+       print(f"{max_val}")  # O(1)
+   ```
+   **Complexity Analysis**:
+   -The time complexity of the max_chipriota function is \(O(n^3)\) due to the nested loop section
+   -Since this calculation is performed for each input array, and there are num_arrays input arrays,
+    the overall time complexity becomes \(O(num\_arrays \times n^3)\).
+
+Overall, the time complexity of the entire code is dominated by the nested loops, resulting in \(O(n^3)\). 
+
 ## Other Implementations
