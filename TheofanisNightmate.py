@@ -1,57 +1,32 @@
-import sys
-import concurrent.futures
+def max_chipriota(arr):
+    n = len(arr)
+    dp = [[-float('inf')]*(n+1) for _ in range(n+1)]
+    divs = [[[] for _ in range(n+1)] for _ in range(n+1)]
+    prefix_sum = [0]*(n+1)
+    for i in range(n):
+        prefix_sum[i+1] = prefix_sum[i] + arr[i]
+    dp[0][0] = 0
+    for i in range(1, n+1):
+        for j in range(1, i+1):
+            for k in range(i):
+                val = dp[k][j-1] + j*(prefix_sum[i]-prefix_sum[k])
+                if val > dp[i][j]:
+                    dp[i][j] = val
+                    div = divs[k][j-1] + [arr[k:i]]
+                    divs[i][j] = div
+    max_j = max(range(n+1), key=lambda j: dp[n][j])
+    return dp[n][max_j], divs[n][max_j]
 
-def calculate_max_cypriot_value(n, array):
-    max_cypriot_value = sum((i + 1) * array[i] for i in range(n))
+# Ejemplo de entrada
+arr = [-3, -4, 2, -5, 1, 10, 17, 23]
+max_val, max_div = max_chipriota(arr)
+print(f"Valor Chipriota Máximo: {max_val}, Divisiones: {max_div}")
 
-    # Dividir el array en subarrays de forma apropiada
-    division = []
-    subarray = [array[0]]
-    current_sum = array[0]
-    for i in range(1, n):
-        if current_sum + array[i] >= 0:
-            subarray.append(array[i])
-            current_sum += array[i]
-        else:
-            division.append(subarray)
-            subarray = [array[i]]
-            current_sum = array[i]
-    division.append(subarray)
 
-    return max_cypriot_value, division
 
-def process_test_case(test_case):
-    n, array = test_case
-    return calculate_max_cypriot_value(n, array)
 
-def main():
-    input_data = sys.stdin.read().strip().split('\n')
-    t = int(input_data[0])
-    test_cases = []
-    index = 1
-    
-    for _ in range(t):
-        n = int(input_data[index])
-        array = list(map(int, input_data[index+1].split()))
-        test_cases.append((n, array))
-        index += 2
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        results = list(executor.map(process_test_case, test_cases))
 
-    for max_value, division in results:
-        print("División del array:")
-        for subarray in division:
-            print(subarray)
-        print("Sumas parciales de cada subarray:")
-        for i, subarray in enumerate(division):
-            subarray_sum = sum(subarray)
-            weighted_sum = (i + 1) * subarray_sum
-            print(f"Subarray {i + 1}: {subarray} suma: {subarray_sum}, suma ponderada: {weighted_sum}")
-        print("Resultado:")
-        print(max_value)
-        print()  # Separador de casos de prueba
 
-if __name__ == "__main__":
-    main()
+
 
