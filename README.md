@@ -278,7 +278,7 @@ We will now analyze the code section by section
    ```
    **Complexity Analysis**:
    - The time complexity of reading each array is linear, \(O(n)\), where n is the length of the array.
-   - Since there are num_arrays arrays to read, the overall time complexity becomes \(O(num\_arrays \times n)\)
+   - Since there are num_arrays arrays to read, the overall time complexity becomes \(O(num\_arrays * n)\)
 
 4. **Calculating and Printing Results**:
    ```python
@@ -289,7 +289,7 @@ We will now analyze the code section by section
    **Complexity Analysis**:
    -The time complexity of the max_chipriota function is \(O(n^3)\) due to the nested loop section
    -Since this calculation is performed for each input array, and there are num_arrays input arrays,
-    the overall time complexity becomes \(O(num\_arrays \times n^3)\).
+    the overall time complexity becomes \(O(num\_arrays * n^3)\).
 
 Overall, the time complexity of the entire code is dominated by the nested loops, resulting in \(O(n^3)\). 
 
