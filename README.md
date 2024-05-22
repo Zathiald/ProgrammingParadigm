@@ -53,7 +53,116 @@ So now that we have our problem we will implement a model for further analysis.
 
 ## Implementation
 
+In order to solve this code, we will create a python code in which we can take the inputs and output the maximum Cryopt value, for this code we will use parallel programming in order to get all the different array divisions in a parallel way in order to accelerate the process, the code will go as follows:
+
+1. **Module Import**:
+```python
+import concurrent.futures
+```
+This line imports the `concurrent.futures` module, which allows for parallel execution of tasks.
+
+2. **Function max_chipriota(arr)**:
+```python
+def max_chipriota(arr):
+```
+This function takes an input list of numbers `arr` and returns the maximum Chipriota sum and the corresponding divisions.
+
+3. **Variable Initialization**:
+```python
+n = len(arr)
+dp = [[-float('inf')]*(n+1) for _ in range(n+1)]
+divs = [[[] for _ in range(n+1)] for _ in range(n+1)]
+prefix_sum = [0]*(n+1)
+for i in range(n):
+    prefix_sum[i+1] = prefix_sum[i] + arr[i]
+dp[0][0] = 0
+```
+Several lists and matrices are initialized, including `dp` (a matrix to store the values of the maximum Chipriota sum), `divs` (a matrix to store the corresponding divisions), and `prefix_sum` (a list to store the cumulative sums of `arr`).
+
+4. **Function calculate_dp_and_divs(i, j)**:
+```python
+def calculate_dp_and_divs(i, j):
+    for k in range(i):
+        val = dp[k][j-1] + j*(prefix_sum[i]-prefix_sum[k])
+        if val > dp[i][j]:
+            dp[i][j] = val
+            div = divs[k][j-1] + [arr[k:i]]
+            divs[i][j] = div
+```
+This inner function calculates the values of `dp[i][j]` and `divs[i][j]` for a given pair of `i` and `j`.
+
+5. **Parallel Task Execution**:
+```python
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    for i in range(1, n+1):
+        for j in range(1, i+1):
+            executor.submit(calculate_dp_and_divs, i, j)
+```
+A `ThreadPoolExecutor` is used to execute the `calculate_dp_and_divs(i, j)` function in parallel for all possible pairs of `i` and `j`.
+
+6. **Maximum Value Calculation**:
+```python
+max_j = max(range(n+1), key=lambda j: dp[n][j])
+return dp[n][max_j], divs[n][max_j]
+```
+The maximum value in the last row of `dp` is found and this value along with the corresponding divisions are returned.
+
+7. **Input Reading**:
+```python
+num_arrays = int(input())
+arrays = []
+for _ in range(num_arrays):
+    length = int(input())
+    array = list(map(int, input().split()))
+    arrays.append(array)
+```
+The number of arrays is read and then each array.
+
+8. **Calculation and Display of Results**:
+```python
+for arr in arrays:
+    max_val, max_div = max_chipriota(arr)
+    print(f"{max_val}")
+```
+For each array, the maximum Chipriota sum and the corresponding divisions are calculated using the `max_chipriota(arr)` function, and then the result is printed.
+
 ## Testing 
+
+For this code there are two ways in order to test it.
+
+First you can input manually the number of arrays and the arrays in the file "TheofanisNightmate.py", the input would need to be as follows:
+
+```python
+  4
+  6
+  1 -3 7 -6 2 5
+  4
+  2 9 -5 -3
+  8
+  -3 -4 2 -5 1 10 17 23
+  1
+  830
+```
+
+For this specific input, the expected output is
+
+```python
+  32
+  4
+  343
+  830
+```
+
+So you can copy and paste this input in the code in order to test it.
+
+The second way to test this program is by simply running the "AutomatizedNightmare.py" file, in this file the number of arrays and the arrays, after running this file the expected output would be
+
+```python
+  32
+  4
+  343
+  830
+```
 
 ## Complexity Analysis
 
