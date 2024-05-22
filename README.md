@@ -294,3 +294,68 @@ We will now analyze the code section by section
 Overall, the time complexity of the entire code is dominated by the nested loops, resulting in \(O(n^3)\). 
 
 ## Other Implementations
+
+Another way to solve this problem would be through using C++ instead of python.
+
+For c++ the main diferences would be in the way we define the concurrent functions and launch the tasks.
+
+
+Concurrent function definition
+
+Python: The function is defined inside max_chipriota and passed to executor.submit.
+python
+```
+def calculate_dp_and_divs(i, j):
+    for k in range(i):
+        val = dp[k][j-1] + j * (prefix_sum[i] - prefix_sum[k])
+        if val > dp[i][j]:
+            dp[i][j] = val
+            div = divs[k][j-1] + [arr[k:i]]
+            divs[i][j] = div
+```
+
+C++: The function is defined as a lambda and passed to std::async.
+cpp
+```
+auto calculate_dp_and_divs = [&](int i, int j) {
+    for (int k = 0; k < i; ++k) {
+        int val = dp[k][j - 1] + j * (prefix_sum[i] - prefix_sum[k]);
+        if (val > dp[i][j]) {
+            dp[i][j] = val;
+            divs[i][j] = divs[k][j - 1];
+            divs[i][j].push_back(vector<int>(arr.begin() + k, arr.begin() + i));
+        }
+    }
+};
+```
+
+Launching and Synchronizing Tasks:
+
+Python: Uses ThreadPoolExecutor to run tasks and concurrent.futures.as_completed to wait for completion.
+python
+```
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    futures = []
+    for i in range(1, n + 1):
+        for j in range(1, i + 1):
+            futures.append(executor.submit(calculate_dp_and_divs, i, j))
+    for future in concurrent.futures.as_completed(futures):
+        future.result()
+```
+      
+C++: Uses std::async to launch tasks and stores futures in a vector, then uses future.wait() to synchronize.
+cpp
+```
+vector<future<void>> futures;
+for (int i = 1; i <= n; ++i) {
+    for (int j = 1; j <= i; ++j) {
+        futures.push_back(async(launch::async, calculate_dp_and_divs, i, j));
+    }
+}
+for (auto& future : futures) {
+    future.wait();
+}
+```
+
+
+
